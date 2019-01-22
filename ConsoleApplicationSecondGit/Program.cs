@@ -10,6 +10,7 @@ namespace ConsoleApplicationSecondGit
     {
         public static void Main(string[] args)
         {
+            // Testing Web Services
         }
     }
 }
