@@ -23,23 +23,33 @@ namespace ConsoleApplicationSecondGit
             IRestResponse loginResponse = client.Execute(loginTest);
             var loginData = loginResponse.Content;
 
-            //
-            JObject jObject = JObject.Parse(loginData);
-            string token = (string)jObject.SelectToken("content");
-            Console.WriteLine("loginData: " + token);
-            
+            //RegeX parth 
+            string token = "";
+            Regex pattern = new Regex("{\"content\":\\s*\"(\\w+)\"}");
+            MatchCollection matchCollection = pattern.Matches(loginData);
+            foreach (Match current in matchCollection)
+            {
+                token = current.Groups[1].ToString();
+                Console.WriteLine("REGEX token: " + token);
+            }
+            //JObject parth
+            //JObject jObject = JObject.Parse(loginData);
+            //token = (string)jObject.SelectToken("content");
+            //Console.WriteLine("token: " + token);
+
             //
             var tokenLifeChange = new RestRequest("/tokenlifetime", Method.PUT);
             tokenLifeChange.AddParameter("token", token);
-            tokenLifeChange.AddParameter("time", 600000);
+            tokenLifeChange.AddParameter("time", 700000);
             IRestResponse tokenLifeChangeResponse = client.Execute(tokenLifeChange);
 
-            var tokenRequest = new RestRequest("/tokenlifetime", Method.GET);
             //
+            var tokenRequest = new RestRequest("/tokenlifetime", Method.GET);
             IRestResponse tokenResponse = client.Execute(tokenRequest);
             var tokenContent = tokenResponse.Content;
 
             //
+
             var userRequest = new RestRequest("/user", Method.GET);
             userRequest.AddParameter("token", token);
             IRestResponse userResponse = client.Execute(userRequest);
