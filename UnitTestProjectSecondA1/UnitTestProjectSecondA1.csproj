@@ -72,12 +72,20 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Data\Lifetime.cs" />
+    <Compile Include="Data\LifetimeRepository.cs" />
+    <Compile Include="Data\UrlRepository.cs" />
+    <Compile Include="Data\User.cs" />
+    <Compile Include="Data\UserRopesitory.cs" />
+    <Compile Include="Services\LoginBLL.cs" />
     <Compile Include="SimpleTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tools\RestCRUD.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
