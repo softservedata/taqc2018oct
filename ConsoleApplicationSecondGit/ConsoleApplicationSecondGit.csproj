@@ -72,6 +72,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Lifetime.cs" />
+    <Compile Include="Data\LifetimeRepository.cs" />
+    <Compile Include="Data\UrlRepository.cs" />
+    <Compile Include="Data\User.cs" />
+    <Compile Include="Data\UserRepository.cs" />
+    <Compile Include="Services\LoginBLL.cs" />
+    <Compile Include="Tests\Tests.cs" />
+    <Compile Include="Tools\RestCRUD.cs" />
     <Compile Include="UnitTestProject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RestResult.cs" />
@@ -93,6 +101,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
