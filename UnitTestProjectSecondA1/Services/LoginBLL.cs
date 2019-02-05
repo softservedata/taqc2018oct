@@ -4,26 +4,39 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnitTestProjectSecondA1.Data;
+using UnitTestProjectSecondA1.Entity;
 using UnitTestProjectSecondA1.Tools;
 
 namespace UnitTestProjectSecondA1.Services
 {
     public class LoginBLL
     {
-        private RestCRUD<string> service;
+        private LoginCRUD loginCRUD;
 
         public LoginBLL()
         {
-            service = new RestCRUD<string>(UrlRepository.GetLogin());
+            loginCRUD = new LoginCRUD();
         }
 
-        public void SuccesUserLogin(User user)
+        public void SuccessfulUserLogin(User user)
         {
         }
 
-        public void SuccesAdminLogin(User adminUser)
+        public void UnsuccessfulUserLogin(User user)
         {
         }
 
+        public AdminBLL SuccessfulAdminLogin(User adminUser)
+        {
+            // Paraneters //TODO
+            SimpleEntity simpleEntity = loginCRUD.HttpPostAsObject(null, null, null);
+            // save adminUser //TODO
+            return new AdminBLL(adminUser);
+        }
+
+        public AdminBLL UnsuccessfulAdminLogin(User adminUser)
+        {
+            return null;
+        }
     }
 }

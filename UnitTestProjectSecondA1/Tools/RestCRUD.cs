@@ -5,81 +5,151 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnitTestProjectSecondA1.Data;
+using UnitTestProjectSecondA1.Entity;
 
 namespace UnitTestProjectSecondA1.Tools
 {
-    public class RestCRUD<T>
+    public abstract class RestCRUD<T>
     {
-        public string Url { get; private set; }
+        public RestUrl restUrl;
         private RestClient client;
         private JsonDeserializer deserial;
 
-        public RestCRUD(string url)
+        public RestCRUD(RestUrl restUrl)
         {
-            Url = url;
-            client = new RestClient(url);
+            this.restUrl = restUrl;
+            client = new RestClient(restUrl.ReadBaseUrl());
             deserial = new JsonDeserializer();
         }
 
-        public IRestResponse HttpGetAsResponse()
-        {
-            var request = new RestRequest(Method.GET);
-            return client.Execute(request);
-        }
+        // private - - - - - - - - - - - - - - - - - - - -
 
-        public string HttpGetAsString()
+        private T ConvertToObject(IRestResponse response)
         {
-            return HttpGetAsResponse().Content;
-        }
-
-        public T HttpGetAsObject()
-        {
-            // TODO try{} catch()
-            return deserial.Deserialize<T>(HttpGetAsResponse());
-        }
-
-        public IRestResponse HttpPostAsResponse(Dictionary<string, string> parameters)
-        {
-            var request = new RestRequest(Method.POST);
-            foreach (KeyValuePair<string, string> current in parameters)
+            T result = default(T);
+            try
             {
-                Console.WriteLine(current.Key + "   " + current.Value);
-                request.AddParameter(current.Key, current.Value);
+                result = deserial.Deserialize<T>(response);
             }
-            return client.Execute(request);
-        }
-
-        public string HttpPostAsString(Dictionary<string, string> parameters)
-        {
-            return HttpPostAsResponse(parameters).Content;
-        }
-
-        public T HttpPostAsObject(Dictionary<string, string> parameters)
-        {
-            // TODO try{} catch()
-            return deserial.Deserialize<T>(HttpPostAsResponse(parameters));
-        }
-
-        public IRestResponse HttpPutAsResponse(Dictionary<string, string> parameters)
-        {
-            var request = new RestRequest(Method.PUT);
-            foreach (KeyValuePair<string, string> current in parameters)
+            catch (Exception ex)
             {
-                Console.WriteLine(current.Key + "   " + current.Value);
-                request.AddParameter(current.Key, current.Value);
+                // TODO Save to Log File
+                Console.Error.WriteLine("Exception: {0}\n{1}", ex.Message, ex.StackTrace);
+                // TODO Develop Custom Exception
+                throw new Exception("ConvertToObject Error. " + ex.Message);
             }
-            return client.Execute(request);
+            return result;
         }
 
-        public string HttpPutAsString(Dictionary<string, string> parameters)
+        private RestRequest PrepareRequest(RestRequest request, RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
         {
-            return HttpPutAsResponse(parameters).Content;
+            if (bodyParameters != null)
+            {
+                foreach (KeyValuePair<string, string> current in bodyParameters.Parameters)
+                {
+                    Console.WriteLine("bodyParameters: " + current.Key + "   " + current.Value);
+                    request.AddParameter(current.Key, current.Value);
+                }
+            }
+            //
+            if (urlSegment != null)
+            {
+                foreach (KeyValuePair<string, string> current in urlSegment.Parameters)
+                {
+                    Console.WriteLine("urlSegment: " + current.Key + "   " + current.Value);
+                    request.AddUrlSegment(current.Key, current.Value);
+                }
+            }
+            //
+            if (urlParameters != null)
+            {
+                foreach (KeyValuePair<string, string> current in urlParameters.Parameters)
+                {
+                    Console.WriteLine("urlParameters: " + current.Key + "   " + current.Value);
+                    // TODO
+                    //request.AddUrlSegment(current.Key, current.Value);
+                }
+            }
+            //
+            return request;
         }
 
-        public T HttpPutAsObject(Dictionary<string, string> parameters)
+        private IRestResponse ExecuteRequest(RestRequest request, RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
         {
-            // TODO try{} catch()
-            return deserial.Deserialize<T>(HttpPutAsResponse(parameters));
+            return client.Execute(PrepareRequest(request, bodyParameters, urlSegment, urlParameters));
+        }
+
+        // Http Get - - - - - - - - - - - - - - - - - - - -
+
+        public virtual IRestResponse HttpGetAsResponse(RestParameters urlSegment, RestParameters urlParameters)
+        {
+            var request = new RestRequest(restUrl.ReadGetUrl(), Method.GET);
+            return ExecuteRequest(request, null, urlSegment, urlParameters);
+        }
+
+        public string HttpGetAsString(RestParameters urlSegment, RestParameters urlParameters)
+        {
+            return HttpGetAsResponse(urlSegment, urlParameters).Content;
+        }
+
+        public T HttpGetAsObject(RestParameters urlSegment, RestParameters urlParameters)
+        {
+            return ConvertToObject(HttpGetAsResponse(urlSegment, urlParameters));
+        }
+
+        // Http Post - - - - - - - - - - - - - - - - - - - -
+
+        public virtual IRestResponse HttpPostAsResponse(RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
+        {
+            var request = new RestRequest(restUrl.ReadPostUrl(), Method.POST);
+            return ExecuteRequest(request, bodyParameters, urlSegment, urlParameters);
+        }
+
+        public string HttpPostAsString(RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
+        {
+            return HttpPostAsResponse(bodyParameters, urlSegment, urlParameters).Content;
+        }
+
+        public T HttpPostAsObject(RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
+        {
+            return ConvertToObject(HttpPostAsResponse(bodyParameters, urlSegment, urlParameters));
+        }
+
+        // Http Put - - - - - - - - - - - - - - - - - - - -
+
+        public virtual IRestResponse HttpPutAsResponse(RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
+        {
+            var request = new RestRequest(restUrl.ReadPutUrl(), Method.PUT);
+            return ExecuteRequest(request, bodyParameters, urlSegment, urlParameters);
+        }
+
+        public string HttpPutAsString(RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
+        {
+            return HttpPutAsResponse(bodyParameters, urlSegment, urlParameters).Content;
+        }
+
+        public T HttpPutAsObject(RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
+        {
+            return ConvertToObject(HttpPutAsResponse(bodyParameters, urlSegment, urlParameters));
+        }
+
+        // Http Delete - - - - - - - - - - - - - - - - - - - -
+
+        public virtual IRestResponse HttpDeleteAsResponse(RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
+        {
+            var request = new RestRequest(restUrl.ReadDeleteUrl(), Method.DELETE);
+            return ExecuteRequest(request, bodyParameters, urlSegment, urlParameters);
+        }
+
+        public string HttpDeleteAsString(RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
+        {
+            return HttpDeleteAsResponse(bodyParameters, urlSegment, urlParameters).Content;
+        }
+
+        public T HttpDeleteAsObject(RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
+        {
+            return ConvertToObject(HttpDeleteAsResponse(bodyParameters, urlSegment, urlParameters));
         }
 
     }

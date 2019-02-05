@@ -8,23 +8,46 @@ namespace UnitTestProjectSecondA1.Data
 {
     public sealed class UrlRepository
     {
+        private static string server = "http://localhost:8080/";
+        public static string Server
+        {
+            get { return server; }
+            set { server = value; }
+        }
+
         private UrlRepository()
         {
         }
 
-        public static string GetLogin()
+        public static RestUrl GetLogin()
         {
-            return "http://localhost:8080/login";
+            return new RestUrl()
+                .AddBaseUrl(Server + "login/")
+                .AddGetUrl("")
+                .AddPostUrl("")
+                .AddPutUrl("")
+                .AddDeleteUrl("");
         }
 
-        public static string GetLogout()
+        public static RestUrl GetLogout()
         {
-            return "http://localhost:8080/logout";
+            return new RestUrl()
+                .AddBaseUrl(Server + "logout/")
+                .AddGetUrl("")
+                .AddPostUrl("")
+                .AddPutUrl("")
+                .AddDeleteUrl("");
         }
 
-        public static string GetTokenLifetime()
+        public static RestUrl GetTokenLifetime()
         {
-            return "http://localhost:8080/tokenlifetime";
+            return new RestUrl()
+                .AddBaseUrl(Server + "tokenlifetime/")
+                .AddGetUrl("")
+                .AddPostUrl("")
+                .AddPutUrl("")
+                .AddDeleteUrl("");
         }
+
     }
 }
