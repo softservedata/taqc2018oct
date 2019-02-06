@@ -21,6 +21,7 @@ namespace ConsoleApplicationSecondGit
             //string token = restResult.ToString();
             string url = "http://localhost:8080/";
             var client = new RestClient(url);
+            string newUserName = "NewUser";
             //           
             var loginRequest = new RestRequest("/login", Method.POST);
             loginRequest.AddParameter("name", "admin");
@@ -72,11 +73,26 @@ namespace ConsoleApplicationSecondGit
             IRestResponse userResponse = client.Execute(userRequest);
             var userContent = userResponse.Content;
 
+            var userCreationRequest = new RestRequest("/user", Method.POST);
+            userCreationRequest.AddParameter("token", token);
+            userCreationRequest.AddParameter("name", newUserName);
+            userCreationRequest.AddParameter("password", "PasswordOfNewUser");
+            userCreationRequest.AddParameter("rights", "false");
+            IRestResponse userCreationResponse = client.Execute(userCreationRequest);
+
+            var usersRequest = new RestRequest("/users", Method.GET);
+            usersRequest.AddParameter("token", token);
+            IRestResponse CreatedUserVerificationResponse = client.Execute(usersRequest);
+            var createdUser = CreatedUserVerificationResponse.Content;
+
+            Regex patern = new Regex(@"\\t("+newUserName+ @")\\n\d*");
+            Match match = patern.Match(createdUser);
+            Console.WriteLine("CreatedUser: " + match.Groups[1].Value);
             //
             Console.WriteLine("loginData: " + loginData);
             Console.WriteLine("content: " + tokenContent);
             Console.WriteLine("userContent: " + userContent);
-            Console.ReadLine();
+            //Console.ReadLine();
 
 
         }
