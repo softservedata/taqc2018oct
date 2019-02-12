@@ -78,7 +78,6 @@
     <Compile Include="Data\User.cs" />
     <Compile Include="Data\UserRepository.cs" />
     <Compile Include="Services\LoginBLL.cs" />
-    <Compile Include="Tests\Class1.cs" />
     <Compile Include="Tests\Tests.cs" />
     <Compile Include="Tools\RestCRUD.cs" />
     <Compile Include="UnitTestProject.cs" />
