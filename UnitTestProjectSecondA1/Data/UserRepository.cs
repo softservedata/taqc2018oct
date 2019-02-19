@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace UnitTestProjectSecondA1.Data
 {
-    public sealed class UserRopesitory
+    public sealed class UserRepository
     {
-        private UserRopesitory()
+        private UserRepository()
         {
         }
 

@@ -15,12 +15,6 @@ namespace UnitTestProjectSecondA1.Tools
         {
         }
 
-        private void ThrowException(string message)
-        {
-            // TODO Develop Custom Exception
-            throw new Exception(string.Format("Method {0} not Support for Login Resource", message));
-        }
-
         public override IRestResponse HttpGetAsResponse(RestParameters urlSegment, RestParameters urlParameters)
         {
             ThrowException("GET");

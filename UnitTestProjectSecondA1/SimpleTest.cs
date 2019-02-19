@@ -11,6 +11,8 @@ using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Firefox;
 using RestSharp;
 using RestSharp.Serialization.Json;
+using UnitTestProjectSecondA1.Services;
+using UnitTestProjectSecondA1.Data;
 
 namespace UnitTestProjectSecondA1
 {
@@ -173,7 +175,7 @@ namespace UnitTestProjectSecondA1
             StringAssert.AreEqualIgnoringCase("true", result, "Logout Error");
         }
 
-        [Test, Order(1)]
+        //[Test, Order(1)]
         public void VerifyLogin()
         {
             var client = new RestClient("http://localhost:8080/login");
@@ -187,7 +189,7 @@ namespace UnitTestProjectSecondA1
             Assert.IsTrue(tokenAdmin.Length > 0, "Login Error");
         }
 
-        [Test, Order(2)]
+        //[Test, Order(2)]
         public void VerifyTime()
         {
             var client = new RestClient("http://localhost:8080/tokenlifetime");
@@ -199,7 +201,7 @@ namespace UnitTestProjectSecondA1
             Assert.AreEqual("300000", time, "Time Error");
         }
 
-        [Test, Order(3)]
+        //[Test, Order(3)]
         public void VerifyUpdateTime()
         {
             var client = new RestClient("http://localhost:8080/tokenlifetime");
@@ -213,7 +215,7 @@ namespace UnitTestProjectSecondA1
             StringAssert.AreEqualIgnoringCase("true", result, "Update Time Error");
         }
 
-        [Test, Order(4)]
+        //[Test, Order(4)]
         public void VerifyLogout()
         {
             var client = new RestClient("http://localhost:8080/logout");
@@ -225,6 +227,42 @@ namespace UnitTestProjectSecondA1
             JsonDeserializer deserial = new JsonDeserializer();
             string result = deserial.Deserialize<RestResult>(response).content;
             StringAssert.AreEqualIgnoringCase("true", result, "Logout Error");
+        }
+
+        // DataProvider
+        private static readonly object[] AdminUsers =
+        {
+            //new object[] { UserRepository.Get().Registered() },
+            new object[] { UserRepository.GetAdmin(), LifetimeRepository.GetLongTime() }
+        };
+
+        [Test, TestCaseSource("AdminUsers")]
+        public void ExamineTime(User adminUser, Lifetime newTokenlifetime)
+        {
+            GuestBLL guest = new GuestBLL();
+            Lifetime currentTokenlifetime = guest.GetCurrentTokenlifetime();
+            Assert.AreEqual(LifetimeRepository.DEFAULT_TOKEN_LIFETIME,
+                        currentTokenlifetime.Time, "Current Time Error");
+            //
+            AdminBLL admin = guest
+                .SuccessfulAdminLogin(adminUser)
+                .UpdateTokenlifetime(newTokenlifetime);
+            currentTokenlifetime = admin.GetCurrentTokenlifetime();
+            Assert.AreEqual(LifetimeRepository.LONG_TOKEN_LIFETIME,
+                        currentTokenlifetime.Time, "Long Time Error");
+            //
+            guest = admin.LogoutAdmin();
+            Assert.IsEmpty(adminUser.Token, "Logout Error");
+            //
+            // Return to Previous State
+            currentTokenlifetime.Time = LifetimeRepository.DEFAULT_TOKEN_LIFETIME;
+            guest.SuccessfulAdminLogin(adminUser)
+                .UpdateTokenlifetime(currentTokenlifetime)
+                .LogoutAdmin();
+            //
+            currentTokenlifetime = guest.GetCurrentTokenlifetime();
+            Assert.AreEqual(LifetimeRepository.DEFAULT_TOKEN_LIFETIME,
+                        currentTokenlifetime.Time, "Current Time Error");
         }
     }
 }

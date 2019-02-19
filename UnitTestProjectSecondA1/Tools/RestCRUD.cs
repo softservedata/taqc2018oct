@@ -23,11 +23,19 @@ namespace UnitTestProjectSecondA1.Tools
             deserial = new JsonDeserializer();
         }
 
+        // protected - - - - - - - - - - - - - - - - - - - -
+
+        protected void ThrowException(string message)
+        {
+            // TODO Develop Custom Exception
+            throw new Exception(string.Format("Method {0} not Support for Tokenlifetime Resource", message));
+        }
+
         // private - - - - - - - - - - - - - - - - - - - -
 
         private T ConvertToObject(IRestResponse response)
         {
-            T result = default(T);
+            T result = default(T); // Running  from T Default Constructor
             try
             {
                 result = deserial.Deserialize<T>(response);
@@ -42,7 +50,31 @@ namespace UnitTestProjectSecondA1.Tools
             return result;
         }
 
-        private RestRequest PrepareRequest(RestRequest request, RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
+        private RestRequest CreateRestRequest(string uri, RestSharp.Method method, RestParameters urlParameters)
+        {
+            if (urlParameters != null)
+            {
+                bool isFirstParameter = true;
+                foreach (KeyValuePair<string, string> current in urlParameters.Parameters)
+                {
+                    Console.WriteLine("urlParameters: " + current.Key + "   " + current.Value);
+                    if (isFirstParameter)
+                    {
+                        uri = uri + "?";
+                        isFirstParameter = false;
+                    }
+                    else
+                    {
+                        uri = uri + "&";
+                    }
+                    uri = uri + current.Key + "=" + current.Value;
+                }
+            }
+            //
+            return new RestRequest(uri, method);
+        }
+
+        private RestRequest PrepareRequest(RestRequest request, RestParameters bodyParameters, RestParameters urlSegment)
         {
             if (bodyParameters != null)
             {
@@ -62,30 +94,20 @@ namespace UnitTestProjectSecondA1.Tools
                 }
             }
             //
-            if (urlParameters != null)
-            {
-                foreach (KeyValuePair<string, string> current in urlParameters.Parameters)
-                {
-                    Console.WriteLine("urlParameters: " + current.Key + "   " + current.Value);
-                    // TODO
-                    //request.AddUrlSegment(current.Key, current.Value);
-                }
-            }
-            //
             return request;
         }
 
-        private IRestResponse ExecuteRequest(RestRequest request, RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
+        private IRestResponse ExecuteRequest(RestRequest request, RestParameters bodyParameters, RestParameters urlSegment)
         {
-            return client.Execute(PrepareRequest(request, bodyParameters, urlSegment, urlParameters));
+            return client.Execute(PrepareRequest(request, bodyParameters, urlSegment));
         }
 
         // Http Get - - - - - - - - - - - - - - - - - - - -
 
         public virtual IRestResponse HttpGetAsResponse(RestParameters urlSegment, RestParameters urlParameters)
         {
-            var request = new RestRequest(restUrl.ReadGetUrl(), Method.GET);
-            return ExecuteRequest(request, null, urlSegment, urlParameters);
+            return ExecuteRequest(CreateRestRequest(restUrl.ReadGetUrl(), Method.GET, urlParameters),
+                    null, urlSegment);
         }
 
         public string HttpGetAsString(RestParameters urlSegment, RestParameters urlParameters)
@@ -102,8 +124,8 @@ namespace UnitTestProjectSecondA1.Tools
 
         public virtual IRestResponse HttpPostAsResponse(RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
         {
-            var request = new RestRequest(restUrl.ReadPostUrl(), Method.POST);
-            return ExecuteRequest(request, bodyParameters, urlSegment, urlParameters);
+            return ExecuteRequest(CreateRestRequest(restUrl.ReadPostUrl(), Method.POST, urlParameters),
+                    bodyParameters, urlSegment);
         }
 
         public string HttpPostAsString(RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
@@ -120,8 +142,8 @@ namespace UnitTestProjectSecondA1.Tools
 
         public virtual IRestResponse HttpPutAsResponse(RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
         {
-            var request = new RestRequest(restUrl.ReadPutUrl(), Method.PUT);
-            return ExecuteRequest(request, bodyParameters, urlSegment, urlParameters);
+            return ExecuteRequest(CreateRestRequest(restUrl.ReadPutUrl(), Method.PUT, urlParameters),
+                    bodyParameters, urlSegment);
         }
 
         public string HttpPutAsString(RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
@@ -138,8 +160,8 @@ namespace UnitTestProjectSecondA1.Tools
 
         public virtual IRestResponse HttpDeleteAsResponse(RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)
         {
-            var request = new RestRequest(restUrl.ReadDeleteUrl(), Method.DELETE);
-            return ExecuteRequest(request, bodyParameters, urlSegment, urlParameters);
+            return ExecuteRequest(CreateRestRequest(restUrl.ReadDeleteUrl(), Method.DELETE, urlParameters),
+                    bodyParameters, urlSegment);
         }
 
         public string HttpDeleteAsString(RestParameters bodyParameters, RestParameters urlSegment, RestParameters urlParameters)

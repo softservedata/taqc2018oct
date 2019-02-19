@@ -9,16 +9,10 @@ using UnitTestProjectSecondA1.Entity;
 
 namespace UnitTestProjectSecondA1.Tools
 {
-    class LogoutCRUD : RestCRUD<SimpleEntity>
+    public class LogoutCRUD : RestCRUD<SimpleEntity>
     {
         public LogoutCRUD() : base(UrlRepository.GetLogout())
         {
-        }
-
-        private void ThrowException(string message)
-        {
-            // TODO Develop Custom Exception
-            throw new Exception(string.Format("Method {0} not Support for Logout Resource", message));
         }
 
         public override IRestResponse HttpGetAsResponse(RestParameters urlSegment, RestParameters urlParameters)

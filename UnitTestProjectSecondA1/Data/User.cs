@@ -26,5 +26,9 @@ namespace UnitTestProjectSecondA1.Data
             Token = String.Empty;
         }
 
+        public override string ToString()
+        {
+            return "Name: " + Name + " Password: " + Password + " Tocken" + Token;
+        }
     }
 }
