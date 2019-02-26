@@ -15,7 +15,7 @@ namespace UnitTestProjectSecondA1.Services
         //private LogoutCRUD logoutCRUD;
         private TokenlifetimeCRUD tokenlifetimeCRUD;
 
-        public AdminBLL(User adminUser) : base(adminUser)
+        public AdminBLL(IUser adminUser) : base(adminUser)
         {
             //this.adminUser = adminUser;
             //logoutCRUD = new LogoutCRUD();

@@ -11,10 +11,10 @@ namespace UnitTestProjectSecondA1.Services
 {
     public class UserBLL : GuestBLL
     {
-        protected User user;
+        protected IUser user;
         protected LogoutCRUD logoutCRUD;
 
-        public UserBLL(User user)
+        public UserBLL(IUser user)
         {
             this.user = user;
             logoutCRUD = new LogoutCRUD();

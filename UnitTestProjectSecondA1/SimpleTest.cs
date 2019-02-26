@@ -13,6 +13,7 @@ using RestSharp;
 using RestSharp.Serialization.Json;
 using UnitTestProjectSecondA1.Services;
 using UnitTestProjectSecondA1.Data;
+using UnitTestProjectSecondA1.Utils;
 
 namespace UnitTestProjectSecondA1
 {
@@ -233,11 +234,12 @@ namespace UnitTestProjectSecondA1
         private static readonly object[] AdminUsers =
         {
             //new object[] { UserRepository.Get().Registered() },
-            new object[] { UserRepository.GetAdmin(), LifetimeRepository.GetLongTime() }
+            //new object[] { UserRepository.GetAdmin(), LifetimeRepository.GetLongTime() }
+            new object[] { UserRepository.Get().Admin(), LifetimeRepository.GetLongTime() }
         };
 
-        [Test, TestCaseSource("AdminUsers")]
-        public void ExamineTime(User adminUser, Lifetime newTokenlifetime)
+        //[Test, TestCaseSource("AdminUsers")]
+        public void ExamineTime(IUser adminUser, Lifetime newTokenlifetime)
         {
             GuestBLL guest = new GuestBLL();
             Lifetime currentTokenlifetime = guest.GetCurrentTokenlifetime();
@@ -263,6 +265,14 @@ namespace UnitTestProjectSecondA1
             currentTokenlifetime = guest.GetCurrentTokenlifetime();
             Assert.AreEqual(LifetimeRepository.DEFAULT_TOKEN_LIFETIME,
                         currentTokenlifetime.Time, "Current Time Error");
+        }
+
+        [Test]
+        public void CheckFile()
+        {
+            ExternalReader externalReader = new ExternalReader("users.csv");
+            Console.WriteLine("externalReader.Filename = " + externalReader.Filename);
+            Console.WriteLine("externalReader.Path = " + externalReader.Path);
         }
     }
 }

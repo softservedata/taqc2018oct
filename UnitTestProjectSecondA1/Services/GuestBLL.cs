@@ -34,15 +34,15 @@ namespace UnitTestProjectSecondA1.Services
             return lifetime;
         }
 
-        public void SuccessfulUserLogin(User user)
+        public void SuccessfulUserLogin(IUser user)
         {
         }
 
-        public void UnsuccessfulUserLogin(User user)
+        public void UnsuccessfulUserLogin(IUser user)
         {
         }
 
-        public AdminBLL SuccessfulAdminLogin(User adminUser)
+        public AdminBLL SuccessfulAdminLogin(IUser adminUser)
         {
             RestParameters bodyParameters = new RestParameters()
                 .AddParameters("name", adminUser.Name)

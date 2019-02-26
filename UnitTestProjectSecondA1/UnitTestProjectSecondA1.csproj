@@ -72,6 +72,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Data\IUser.cs" />
     <Compile Include="Data\Lifetime.cs" />
     <Compile Include="Data\LifetimeRepository.cs" />
     <Compile Include="Data\RestUrl.cs" />
@@ -90,11 +91,15 @@
     <Compile Include="Tools\LogoutCRUD.cs" />
     <Compile Include="Tools\RestCRUD.cs" />
     <Compile Include="Tools\TokenlifetimeCRUD.cs" />
+    <Compile Include="Utils\ExternalReader.cs" />
+    <Compile Include="Utils\CSVReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
