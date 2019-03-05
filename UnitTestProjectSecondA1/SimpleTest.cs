@@ -238,9 +238,21 @@ namespace UnitTestProjectSecondA1
             new object[] { UserRepository.Get().Admin(), LifetimeRepository.GetLongTime() }
         };
 
+        // DataProvider
+        private static readonly object[] AdminCSVUsers =
+            ListUtils.ToMultiArray(UserRepository.Get().FromCsv(), LifetimeRepository.GetLongTime());
+
+        // DataProvider
+        private static readonly object[] AdminExcelUsers =
+            ListUtils.ToMultiArray(UserRepository.Get().FromExcel(), LifetimeRepository.GetLongTime());
+
         //[Test, TestCaseSource("AdminUsers")]
+        //[Test, TestCaseSource("AdminCSVUsers")]
+        [Test, TestCaseSource("AdminExcelUsers")]
         public void ExamineTime(IUser adminUser, Lifetime newTokenlifetime)
         {
+            Console.WriteLine("Start Test, user: " + adminUser);
+            //
             GuestBLL guest = new GuestBLL();
             Lifetime currentTokenlifetime = guest.GetCurrentTokenlifetime();
             Assert.AreEqual(LifetimeRepository.DEFAULT_TOKEN_LIFETIME,
@@ -267,12 +279,22 @@ namespace UnitTestProjectSecondA1
                         currentTokenlifetime.Time, "Current Time Error");
         }
 
-        [Test]
+        //[Test]
         public void CheckFile()
         {
-            ExternalReader externalReader = new ExternalReader("users.csv");
-            Console.WriteLine("externalReader.Filename = " + externalReader.Filename);
-            Console.WriteLine("externalReader.Path = " + externalReader.Path);
+            //ExternalReader externalReader = new ExternalReader("users.csv");
+            //Console.WriteLine("externalReader.Filename = " + externalReader.Filename);
+            //Console.WriteLine("externalReader.Path = " + externalReader.Path);
+            //
+            CSVReader reader = new CSVReader("users.csv");
+            foreach (IList<string> row in reader.GetAllCells())
+            {
+                foreach (string node in row)
+                {
+                    Console.Write(node + "  ");
+                }
+                Console.WriteLine();
+            }
         }
     }
 }

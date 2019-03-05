@@ -39,6 +39,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="nunit.framework, Version=3.11.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.11.0\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
@@ -91,8 +97,10 @@
     <Compile Include="Tools\LogoutCRUD.cs" />
     <Compile Include="Tools\RestCRUD.cs" />
     <Compile Include="Tools\TokenlifetimeCRUD.cs" />
+    <Compile Include="Utils\ExcelReader.cs" />
     <Compile Include="Utils\ExternalReader.cs" />
     <Compile Include="Utils\CSVReader.cs" />
+    <Compile Include="Utils\ListUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

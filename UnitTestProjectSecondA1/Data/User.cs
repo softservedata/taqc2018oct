@@ -28,9 +28,19 @@ namespace UnitTestProjectSecondA1.Data
         User Build();
     }
 
+    public enum UserFields : int
+    {
+        Name = 0,
+        Password,
+        Address,
+        Email,
+        Token
+    }
 
     public class User : IName, IPassword, IAddress, IUserBuild, IUser
     {
+        public const string EMAIL_SEPARATOR = "@";
+        //
         public string Name { get; private set; }            // Required
         public string Password { get; private set; }        // Required
         public string Address { get; private set; }         // Required
@@ -107,7 +117,48 @@ namespace UnitTestProjectSecondA1.Data
 
         public override string ToString()
         {
-            return "Name: " + Name + " Password: " + Password + " Tocken" + Token;
+            return "Name: " + Name + " Password: " + Password + " Tocken: " + Token + " Address: " + Address;
         }
+
+        // Static Factory
+
+        public static IUser GetUser(IList<string> row)
+        {
+            IList<string> fields = new List<string>(row);
+            for (int i = fields.Count; i < ((UserFields[])Enum.GetValues(typeof(UserFields))).Length; i++)
+            {
+                fields.Add("");
+            }
+            return Get()
+               .SetName(fields[(int)UserFields.Name])
+               .SetPassword(fields[(int)UserFields.Password])
+               .SetAddress(fields[(int)UserFields.Address])
+               .SetEmail(fields[(int)UserFields.Email])
+               .SetToken(fields[(int)UserFields.Token])
+               .Build();
+        }
+
+
+        public static IList<IUser> GetAllUsers(IList<IList<string>> rows)
+        {
+            //logger.Debug("Start GetAllUsers, path = " + path);
+            IList<IUser> users = new List<IUser>();
+            //if ((rows[0][(int)UserFields.Email] != null)
+            //    && (!rows[0][(int)UserFields.Email].Contains(EMAIL_SEPARATOR)))
+            //{
+            //    rows.Remove(rows[0]);
+            //}
+            foreach (IList<string> row in rows)
+            {
+                if (row[(int)UserFields.Name].ToLower().Equals("name")
+                        && row[(int)UserFields.Password].ToLower().Equals("password"))
+                {
+                    continue;
+                }
+                users.Add(GetUser(row));
+            }
+            return users;
+        }
+
     }
 }

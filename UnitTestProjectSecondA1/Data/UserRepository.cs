@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnitTestProjectSecondA1.Utils;
 
 namespace UnitTestProjectSecondA1.Data
 {
@@ -46,29 +47,29 @@ namespace UnitTestProjectSecondA1.Data
                .SetName("ivan")
                .SetPassword("qwerty")
                .SetAddress("myaddres")
-               .SetEmail("myEmail")
+               .SetEmail("myEmail@gmail.com")
                .Build();
         }
 
-        //public IList<IUser> FromCsv()
-        //{
-        //    return FromCsv("ExistUsers.csv");
-        //}
+        public IList<IUser> FromCsv()
+        {
+            return FromCsv("users.csv");
+        }
 
-        //public IList<IUser> FromCsv(string filename)
-        //{
-        //    return User.GetAllUsers(new CSVReader(filename));
-        //}
+        public IList<IUser> FromCsv(string filename)
+        {
+            return User.GetAllUsers(new CSVReader(filename).GetAllCells());
+        }
 
-        //public IList<IUser> FromExcel()
-        //{
-        //    return FromExcel("ExistUsers.xlsx");
-        //}
+        public IList<IUser> FromExcel()
+        {
+            return FromExcel("users.xlsx");
+        }
 
-        //public IList<IUser> FromExcel(string filename)
-        //{
-        //    return User.GetAllUsers(new ExcelReader(filename));
-        //}
+        public IList<IUser> FromExcel(string filename)
+        {
+            return User.GetAllUsers(new ExcelReader(filename).GetAllCells());
+        }
 
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace UnitTestProjectSecondA1.Utils
 {
-    public class ExternalReader
+    public abstract class ExternalReader
     {
         public const int PATH_PREFIX = 6;
         public const string PATH_SEPARATOR = "\\";
@@ -26,10 +26,12 @@ namespace UnitTestProjectSecondA1.Utils
             Path = Path.Remove(Path.IndexOf(FOLDER_BIN)) + FOLDER_DATA + PATH_SEPARATOR + filename;
         }
 
-        //public abstract IList<IList<string>> GetAllCells();
+        public IList<IList<string>> GetAllCells()
+        {
+            return GetAllCells(Path);
+        }
 
-        //public abstract IList<IList<string>> GetAllCells(string path);
+        public abstract IList<IList<string>> GetAllCells(string path);
 
-        //public abstract string GetConnection();
     }
 }

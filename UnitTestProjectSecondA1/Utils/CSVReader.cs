@@ -16,40 +16,23 @@ namespace UnitTestProjectSecondA1.Utils
 
         public CSVReader(string filename) : base(filename)
         {
-            //Filename = filename;
-            //Path = System.IO.Path.GetDirectoryName(Assembly.GetAssembly(typeof(CSVReader)).CodeBase)
-            //        .Substring(PATH_PREFIX);
-            //Path = Path.Remove(Path.IndexOf(FOLDER_BIN)) + FOLDER_DATA + PATH_SEPARATOR + filename;
-            //MessageBox.Show("Path.GetDirectoryName(Assembly.GetAssembly(typeof(CSVReader)).CodeBase): "
-            //    + System.IO.Path.GetDirectoryName(Assembly.GetAssembly(typeof(CSVReader)).CodeBase),
-            //    "Full PATH ", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        //public override IList<IList<string>> GetAllCells()
-        //{
-        //    return GetAllCells(Path);
-        //}
+        public override IList<IList<string>> GetAllCells(string path)
+        {
+            IList<IList<string>> allCells = new List<IList<string>>();
+            string row;
+            //
+            using (StreamReader streamReader = new StreamReader(path))
+            {
+                while ((row = streamReader.ReadLine()) != null)
+                {
+                    allCells.Add(row.Split(CSV_SPLIT_BY).ToList());
+                }
+            }
+            return allCells;
+        }
 
-        //public override IList<IList<string>> GetAllCells(string path)
-        //{
-        //    Path = path;
-        //    IList<IList<string>> allCells = new List<IList<string>>();
-        //    string row;
-        //    //
-        //    using (StreamReader streamReader = new StreamReader(path))
-        //    {
-        //        while ((row = streamReader.ReadLine()) != null)
-        //        {
-        //            allCells.Add(row.Split(CSV_SPLIT_BY).ToList());
-        //        }
-        //    }
-        //    return allCells;
-        //}
-
-        //public override string GetConnection()
-        //{
-        //    return Path;
-        //}
     }
 
 }
