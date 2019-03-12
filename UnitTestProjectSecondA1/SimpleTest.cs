@@ -14,6 +14,10 @@ using RestSharp.Serialization.Json;
 using UnitTestProjectSecondA1.Services;
 using UnitTestProjectSecondA1.Data;
 using UnitTestProjectSecondA1.Utils;
+using NLog;
+using NUnit.Allure.Core;
+using NUnit.Allure.Attributes;
+using Allure.Commons;
 
 namespace UnitTestProjectSecondA1
 {
@@ -32,9 +36,14 @@ namespace UnitTestProjectSecondA1
         }
     }
 
+    [AllureNUnit]
+    [AllureDisplayIgnored]
     [TestFixture]
     public class SimpleTest
     {
+        public static Logger log = LogManager.GetCurrentClassLogger(); // for NLog
+        //public static Logger log = LogManager.GetLogger("rolling0");   // for NLog
+
         private string tokenAdmin;
 
         //[Test]
@@ -248,10 +257,11 @@ namespace UnitTestProjectSecondA1
 
         //[Test, TestCaseSource("AdminUsers")]
         //[Test, TestCaseSource("AdminCSVUsers")]
-        [Test, TestCaseSource("AdminExcelUsers")]
+        //[Test, TestCaseSource("AdminExcelUsers")]
         public void ExamineTime(IUser adminUser, Lifetime newTokenlifetime)
         {
-            Console.WriteLine("Start Test, user: " + adminUser);
+            log.Info("Start Test, user: " + adminUser);
+            //Console.WriteLine("Start Test, user: " + adminUser);
             //
             GuestBLL guest = new GuestBLL();
             Lifetime currentTokenlifetime = guest.GetCurrentTokenlifetime();
@@ -277,6 +287,7 @@ namespace UnitTestProjectSecondA1
             currentTokenlifetime = guest.GetCurrentTokenlifetime();
             Assert.AreEqual(LifetimeRepository.DEFAULT_TOKEN_LIFETIME,
                         currentTokenlifetime.Time, "Current Time Error");
+            log.Info("Done Test, user: " + adminUser);
         }
 
         //[Test]
@@ -296,5 +307,58 @@ namespace UnitTestProjectSecondA1
                 Console.WriteLine();
             }
         }
+
+        [Test]
+        [AllureTag("Regression_Tag")]
+        [AllureSeverity(SeverityLevel.normal)]
+        [AllureIssue("ISSUE-1")]
+        [AllureTms("TMS-12")]
+        [AllureOwner("User_Owner")]
+        [AllureParentSuite("With_parameters_ParentSuite")]
+        [AllureSuite("Passed_Suite")]
+        [AllureSubSuite("NoAssert_SubSuite")]
+        [AllureEpic("Retry_Epic")]
+        [AllureFeature("RetrySmall_Feature")]
+        [AllureLink("softserve_ITA_Link", "https://softserve.academy/")]
+        public void SoftserveAcademy()
+        {
+            log.Info("START SoftserveAcademy");
+            log.Info("ThreadID= " + Thread.CurrentThread.ManagedThreadId);
+            //
+            IWebDriver driver;
+            driver = new ChromeDriver();
+            //driver = new FirefoxDriver();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10); // by default = 0
+            //
+            driver.Navigate().GoToUrl("https://softserve.academy/");
+            Thread.Sleep(1000); // DO NOT USE
+            //
+            driver.FindElement(By.LinkText("Log in")).Click();
+            Thread.Sleep(1000); // DO NOT USE
+            //
+            driver.FindElement(By.Id("username")).Click();
+            driver.FindElement(By.Id("username")).Clear();
+            driver.FindElement(By.Id("username")).SendKeys("Hello2");
+            Thread.Sleep(2000); // DO NOT USE
+            //
+            driver.FindElement(By.Id("username")).Click();
+            driver.FindElement(By.Id("username")).Clear();
+            driver.FindElement(By.Id("username")).SendKeys("Hello");
+            Thread.Sleep(2000); // DO NOT USE
+            //
+            driver.FindElement(By.Id("password")).Click();
+            driver.FindElement(By.Id("password")).Clear();
+            driver.FindElement(By.Id("password")).SendKeys("qwerty");
+            Thread.Sleep(2000); // DO NOT USE
+            //
+            ITakesScreenshot takesScreenshot = driver as ITakesScreenshot;
+            Screenshot screenshot = takesScreenshot.GetScreenshot();
+            byte[] bytes = screenshot.AsByteArray;
+            AllureLifecycle.Instance.AddAttachment("Screenshot", "image/png", bytes);
+            //
+            driver.Quit();
+            log.Info("DONE SoftserveAcademy");
+        }
+
     }
 }

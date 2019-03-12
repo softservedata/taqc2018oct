@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace UnitTestProjectSecondA1.Utils
         public const string PATH_SEPARATOR = "\\";
         protected const string FOLDER_DATA = "Resources";
         protected const string FOLDER_BIN = "bin";
+        //
+        public static Logger log = LogManager.GetCurrentClassLogger(); // for NLog
 
         public string Filename { get; private set; }
         public string Path { get; protected set; }

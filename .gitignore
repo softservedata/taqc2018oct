@@ -279,3 +279,4 @@ ModelManifest.xml
 
 # Custom
 *.dat
+/allure-results/

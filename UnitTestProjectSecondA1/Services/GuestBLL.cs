@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,8 @@ namespace UnitTestProjectSecondA1.Services
 {
     public class GuestBLL
     {
+        public static Logger log = LogManager.GetCurrentClassLogger(); // for NLog
+        //
         private LoginCRUD loginCRUD;
         private TokenlifetimeCRUD tokenlifetimeCRUD;
 
@@ -28,9 +31,12 @@ namespace UnitTestProjectSecondA1.Services
 
         public Lifetime GetCurrentTokenlifetime()
         {
+            log.Debug("Start GetCurrentTokenlifetime()");
             Lifetime lifetime = new Lifetime();
+            log.Trace("lifetime Created");
             SimpleEntity simpleEntity = tokenlifetimeCRUD.HttpGetAsObject(null, null);
             lifetime.Time = simpleEntity.content;
+            log.Debug("Done GetCurrentTokenlifetime()");
             return lifetime;
         }
 

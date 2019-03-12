@@ -23,12 +23,19 @@ namespace UnitTestProjectSecondA1.Utils
             IList<IList<string>> allCells = new List<IList<string>>();
             string row;
             //
-            using (StreamReader streamReader = new StreamReader(path))
+            try
             {
-                while ((row = streamReader.ReadLine()) != null)
+                using (StreamReader streamReader = new StreamReader(path))
                 {
-                    allCells.Add(row.Split(CSV_SPLIT_BY).ToList());
+                    while ((row = streamReader.ReadLine()) != null)
+                    {
+                        allCells.Add(row.Split(CSV_SPLIT_BY).ToList());
+                    }
                 }
+            }
+            catch
+            {
+                log.Error("File " + path + " not Found");
             }
             return allCells;
         }
