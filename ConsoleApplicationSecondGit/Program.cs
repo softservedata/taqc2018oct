@@ -87,14 +87,14 @@ namespace ConsoleApplicationSecondGit
             //File.AppendAllText("D:\\file.txt", "second part\r\n");
             //
             //BasicConfigurator.Configure();
-            XmlConfigurator.Configure();
+            //XmlConfigurator.Configure();
             //
-            //log.Trace("NLOG: Trace Level test");
-            log.Debug("2*Debug Level test");
-            log.Info("2*Info Level");
-            log.Warn("2*Warn Level");
-            log.Error("2*Error Level test");
-            log.Fatal("2*Fatal Level");
+            ////log.Trace("NLOG: Trace Level test");
+            //log.Debug("2*Debug Level test");
+            //log.Info("2*Info Level");
+            //log.Warn("2*Warn Level");
+            //log.Error("2*Error Level test");
+            //log.Fatal("2*Fatal Level");
             Console.WriteLine("done");
         }
     }
