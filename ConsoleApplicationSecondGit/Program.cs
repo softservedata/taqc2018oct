@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConsoleApplicationSecondGit
@@ -30,16 +31,42 @@ namespace ConsoleApplicationSecondGit
         }
     }
 
+    public class RestResult3
+    {
+        [JsonProperty("full_name")]
+        public string FullName { get; set; }
+
+        public override string ToString()
+        {
+            return FullName;
+        }
+    }
+
+    public class RestResult4
+    {
+        [JsonProperty("email")]
+        public string Email { get; set; }
+
+        public override string ToString()
+        {
+            return Email;
+        }
+    }
+
     public class Program
     {
         public static void Main(string[] args)
         {
-            string url = "http://localhost:8080/";
+            //string url = "http://localhost:8080/";
+            //string url = "https://api.github.com/orgs/dotnet/repos";
+            string url = "https://api.github.com";
             var client = new RestClient(url);
             //var request = new RestRequest("orgs/dotnet", Method.GET);
             //var request = new RestRequest(Method.GET);
+            var request = new RestRequest("/orgs/dotnet/repos", Method.GET);
+            //var request = new RestRequest("/orgs/dotnet", Method.GET);
             //
-            var request = new RestRequest("/tokenlifetime", Method.GET);
+            //var request = new RestRequest("/tokenlifetime", Method.GET);
             //var request = new RestRequest("/", Method.GET);
             //var request = new RestRequest("item/125", Method.POST);
             //var request = new RestRequest("item/125", Method.PUT);
@@ -60,13 +87,22 @@ namespace ConsoleApplicationSecondGit
             //request.AddHeader("cache-control", "no-cache");
             //
             IRestResponse response = client.Execute(request);
+            //Thread.Sleep(5000);
+            //var response = client.ExecuteTaskAsync<string>(request);
             var content = response.Content;
             Console.WriteLine("content: " + content);
             //
-            //JsonDeserializer deserial = new JsonDeserializer();
+            JsonDeserializer deserial = new JsonDeserializer();
             //var obj = deserial.Deserialize<RestResult>(response);
             //var obj = JsonConvert.DeserializeObject<RestResult2>(response.Content);
+            var obj = JsonConvert.DeserializeObject<List<RestResult3>>(response.Content);
+            //var obj = JsonConvert.DeserializeObject<RestResult4>(response.Content);
             //Console.WriteLine("Deserialize content: " + obj);
+            Console.WriteLine("Deserialize content: " + obj[0]);
+            foreach (RestResult3 current in obj)
+            {
+                Console.WriteLine("Deserialize content: " + current);
+            }
             //
             //IRestResponse<RestResult> response2 = client.Execute<RestResult>(request);
             //Console.WriteLine("content: " + response2.Data.content);
