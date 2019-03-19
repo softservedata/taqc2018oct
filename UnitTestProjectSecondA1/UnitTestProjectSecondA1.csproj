@@ -128,6 +128,7 @@
     <Compile Include="Services\UserBLL.cs" />
     <Compile Include="SimpleTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestRunner.cs" />
     <Compile Include="Tools\LoginCRUD.cs" />
     <Compile Include="Tools\LogoutCRUD.cs" />
     <Compile Include="Tools\RestCRUD.cs" />

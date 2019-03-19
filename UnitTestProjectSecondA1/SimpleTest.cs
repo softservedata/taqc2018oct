@@ -18,6 +18,7 @@ using NLog;
 using NUnit.Allure.Core;
 using NUnit.Allure.Attributes;
 using Allure.Commons;
+using System.IO;
 
 namespace UnitTestProjectSecondA1
 {
@@ -39,9 +40,9 @@ namespace UnitTestProjectSecondA1
     [AllureNUnit]
     [AllureDisplayIgnored]
     [TestFixture]
-    public class SimpleTest
+    public class SimpleTest : TestRunner
     {
-        public static Logger log = LogManager.GetCurrentClassLogger(); // for NLog
+        //public static Logger log = LogManager.GetCurrentClassLogger(); // for NLog
         //public static Logger log = LogManager.GetLogger("rolling0");   // for NLog
 
         private string tokenAdmin;
@@ -325,12 +326,12 @@ namespace UnitTestProjectSecondA1
             log.Info("START SoftserveAcademy");
             log.Info("ThreadID= " + Thread.CurrentThread.ManagedThreadId);
             //
-            IWebDriver driver;
-            driver = new ChromeDriver();
+            //IWebDriver driver;
+            //driver = new ChromeDriver();
             //driver = new FirefoxDriver();
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10); // by default = 0
+            //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10); // by default = 0
             //
-            driver.Navigate().GoToUrl("https://softserve.academy/");
+            //driver.Navigate().GoToUrl("https://softserve.academy/");
             Thread.Sleep(1000); // DO NOT USE
             //
             driver.FindElement(By.LinkText("Log in")).Click();
@@ -355,8 +356,18 @@ namespace UnitTestProjectSecondA1
             Screenshot screenshot = takesScreenshot.GetScreenshot();
             byte[] bytes = screenshot.AsByteArray;
             AllureLifecycle.Instance.AddAttachment("Screenshot", "image/png", bytes);
+            Thread.Sleep(2000); // DO NOT USE
             //
-            driver.Quit();
+            string htmlCode = driver.PageSource;
+            bytes = Encoding.ASCII.GetBytes(htmlCode);
+            AllureLifecycle.Instance.AddAttachment("HTMP_Source", "text/plain", bytes);
+            //
+            string runtimePath = AppDomain.CurrentDomain.BaseDirectory;
+            string file = File.ReadAllText(runtimePath + ALLURE_CONFIG);
+            bytes = Encoding.ASCII.GetBytes(file);
+            AllureLifecycle.Instance.AddAttachment("External_File_allureConfig.json", "text/plain", bytes);
+            //
+            //driver.Quit();
             log.Info("DONE SoftserveAcademy");
         }
 
